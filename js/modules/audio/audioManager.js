@@ -22,7 +22,7 @@ export function createAudioManager(options) {
   }
 
   function getSelectedModeTarget() {
-    return String(els.audioModeTargetSelect?.value || audioEngine.getCurrentMode() || "map");
+    return audioEngine.getCurrentMode() || "map";
   }
 
   const audioEngine = createAudioEngine({
@@ -170,13 +170,10 @@ export function createAudioManager(options) {
       els.audioAmbienceFileInput?.click();
     });
     els.audioClearAmbienceButton?.addEventListener("click", () => {
-      const mode = getSelectedModeTarget();
       updateWorldAudioSettings((current) => ({
         ...current,
-        ambienceByMode: {
-          ...(current.ambienceByMode || {}),
-          [mode]: "",
-        },
+        customAmbienceUrl: "",
+        ambienceByMode: {},
       }));
       audioEngine.playUiSound("click");
     });
@@ -210,13 +207,10 @@ export function createAudioManager(options) {
       event.target.value = "";
       if (!file) return;
       const url = await readFileToDataUrl(file);
-      const mode = getSelectedModeTarget();
       updateWorldAudioSettings((current) => ({
         ...current,
-        ambienceByMode: {
-          ...(current.ambienceByMode || {}),
-          [mode]: url,
-        },
+        customAmbienceUrl: url,
+        ambienceByMode: {},
       }));
       audioEngine.unlockAudio();
       audioEngine.syncAmbience();
@@ -227,7 +221,6 @@ export function createAudioManager(options) {
     });
 
     document.addEventListener("serkonia:edit-mode-changed", () => syncUi());
-    els.audioModeTargetSelect?.addEventListener("change", () => syncUi());
 
     document.addEventListener("click", (event) => {
       const target = event.target instanceof Element ? event.target.closest("button, summary, .mode-link") : null;

@@ -165,7 +165,7 @@ export function createAudioEngine(options) {
 
   function getCustomAmbienceUrl(mode = currentMode) {
     const settings = getSettings();
-    return String(settings.ambienceByMode?.[mode] || "").trim();
+    return String(settings.customAmbienceUrl || settings.ambienceByMode?.[mode] || "").trim();
   }
 
   function playCustomAmbience(mode = currentMode) {

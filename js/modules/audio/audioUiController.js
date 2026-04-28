@@ -4,8 +4,6 @@ export function createAudioUiController(options) {
     state,
     getUiText,
     getSettings,
-    getCurrentMode,
-    getSelectedModeTarget,
   } = options;
 
   function syncUi() {
@@ -25,6 +23,7 @@ export function createAudioUiController(options) {
     els.audioAmbienceVolumeLabel.textContent = getUiText(state, "audio_ambience_volume");
     els.audioEditorKicker.textContent = getUiText(state, "audio_editor_title");
     els.audioModeTargetLabel.textContent = getUiText(state, "audio_mode_target");
+    els.audioModeTargetSelect.hidden = true;
     els.audioPreviewClickButton.textContent = getUiText(state, "audio_preview_click");
     els.audioPreviewOpenButton.textContent = getUiText(state, "audio_preview_open");
     els.audioPreviewAmbienceButton.textContent = getUiText(state, "audio_preview_ambience");
@@ -42,25 +41,8 @@ export function createAudioUiController(options) {
     els.audioToggleButton.classList.toggle("muted", !settings.enabled);
     els.audioToggleLabel.textContent = settings.enabled ? "\u266a" : "\u266c";
 
-    const modeLabels = {
-      map: getUiText(state, "mode_map"),
-      timeline: getUiText(state, "mode_timeline"),
-      archive: getUiText(state, "mode_archive"),
-      homebrew: getUiText(state, "mode_homebrew"),
-      heroes: getUiText(state, "mode_heroes"),
-    };
-
-    Array.from(els.audioModeTargetSelect?.options || []).forEach((option) => {
-      const hasCustomAmbience = Boolean(String(settings.ambienceByMode?.[option.value] || "").trim());
-      option.textContent = `${modeLabels[option.value] || option.value}${hasCustomAmbience ? " \u2022" : ""}`;
-    });
-
-    if (els.audioModeTargetSelect && !els.audioModeTargetSelect.value) {
-      els.audioModeTargetSelect.value = getCurrentMode();
-    }
     if (els.audioModeStatus) {
-      const selectedMode = getSelectedModeTarget();
-      const hasCustomAmbience = Boolean(String(settings.ambienceByMode?.[selectedMode] || "").trim());
+      const hasCustomAmbience = Boolean(String(settings.customAmbienceUrl || "").trim());
       els.audioModeStatus.textContent = getUiText(
         state,
         hasCustomAmbience ? "audio_mode_status_custom" : "audio_mode_status_builtin",

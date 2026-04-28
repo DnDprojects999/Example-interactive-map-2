@@ -17,6 +17,7 @@ export const DEFAULT_AUDIO_SETTINGS = Object.freeze({
   ambienceVolume: 0.34,
   customUiClickUrl: "",
   customUiOpenUrl: "",
+  customAmbienceUrl: "",
   ambienceByMode: {
     map: "",
     timeline: "",
@@ -73,6 +74,13 @@ export function normalizeAudioSettings(rawValue) {
   const rawAmbienceByMode = raw.ambienceByMode && typeof raw.ambienceByMode === "object"
     ? raw.ambienceByMode
     : {};
+  const legacyCustomAmbienceUrl = [
+    rawAmbienceByMode.map,
+    rawAmbienceByMode.timeline,
+    rawAmbienceByMode.archive,
+    rawAmbienceByMode.homebrew,
+    rawAmbienceByMode.heroes,
+  ].map((value) => normalizeText(value, "")).find(Boolean) || "";
   return {
     enabled: raw.enabled !== false,
     uiEnabled: raw.uiEnabled !== false,
@@ -82,6 +90,7 @@ export function normalizeAudioSettings(rawValue) {
     ambienceVolume: normalizeVolume(raw.ambienceVolume, DEFAULT_AUDIO_SETTINGS.ambienceVolume),
     customUiClickUrl: normalizeText(raw.customUiClickUrl, ""),
     customUiOpenUrl: normalizeText(raw.customUiOpenUrl, ""),
+    customAmbienceUrl: normalizeText(raw.customAmbienceUrl, legacyCustomAmbienceUrl),
     ambienceByMode: {
       map: normalizeText(rawAmbienceByMode.map, ""),
       timeline: normalizeText(rawAmbienceByMode.timeline, ""),
