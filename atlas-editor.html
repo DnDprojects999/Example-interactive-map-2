@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serkonia — редактор контуров атласа</title>
+  <link rel="stylesheet" href="css/atlas-editor.css?v=20260723" />
+</head>
+<body>
+  <header class="atlas-topbar">
+    <div class="atlas-brand">
+      <a href="index.html" class="atlas-back">← Serkonia</a>
+      <div>
+        <strong>Атлас: временный редактор контуров</strong>
+        <span id="statusText">Готов к рисованию</span>
+      </div>
+    </div>
+
+    <div class="atlas-actions">
+      <button id="uploadMapButton" type="button">Загрузить карту</button>
+      <input id="uploadMapInput" type="file" accept="image/*" hidden />
+      <button id="newContourButton" class="primary" type="button">Новый контур</button>
+      <button id="finishContourButton" type="button">Замкнуть</button>
+      <button id="undoPointButton" type="button">Убрать точку</button>
+      <button id="deleteContourButton" type="button">Удалить контур</button>
+      <button id="exportButton" class="primary" type="button">Экспорт JSON</button>
+      <button id="importButton" type="button">Импорт JSON</button>
+      <input id="importInput" type="file" accept="application/json,.json" hidden />
+    </div>
+  </header>
+
+  <main class="atlas-workspace">
+    <aside class="atlas-sidebar">
+      <section>
+        <h2>Рисование</h2>
+        <p class="hint">
+          Сначала загрузи эту карту кнопкой сверху. Нажимай по границе территории, чтобы ставить вершины. Двойной клик или Enter замыкает контур.
+          Колесо — масштаб. Пробел + перетаскивание, средняя или правая кнопка мыши — перемещение карты.
+        </p>
+        <label class="field">
+          <span>Название контура</span>
+          <input id="contourNameInput" type="text" placeholder="Например: Северная империя" />
+        </label>
+        <label class="field compact">
+          <span>Прозрачность заливки</span>
+          <input id="fillOpacityInput" type="range" min="0" max="0.45" step="0.01" value="0.16" />
+        </label>
+        <label class="field compact">
+          <span>Толщина линии</span>
+          <input id="strokeWidthInput" type="range" min="1" max="8" step="0.5" value="3" />
+        </label>
+      </section>
+
+      <section class="contours-section">
+        <div class="section-heading">
+          <h2>Контуры</h2>
+          <span id="contourCount">0</span>
+        </div>
+        <div id="contoursList" class="contours-list"></div>
+      </section>
+
+      <section class="secondary-actions">
+        <button id="fitButton" type="button">Показать всю карту</button>
+        <button id="clearButton" class="danger" type="button">Очистить всё</button>
+      </section>
+    </aside>
+
+    <section id="viewport" class="atlas-viewport" tabindex="0" aria-label="Редактор контуров карты">
+      <div id="mapTransform" class="atlas-map-transform">
+        <div id="mapPlaceholder" class="map-placeholder">
+          <strong>Карта ещё не загружена</strong>
+          <span>Нажми «Загрузить карту» и выбери исходный JPEG.</span>
+        </div>
+        <img id="mapImage" class="atlas-map-image" alt="Карта Серконии" draggable="false" hidden />
+        <svg id="contoursSvg" class="atlas-contours-svg" viewBox="0 0 2048 1051" aria-label="SVG-контуры">
+          <g id="savedContoursLayer"></g>
+          <g id="draftContourLayer"></g>
+        </svg>
+      </div>
+      <div class="zoom-readout" id="zoomReadout">100%</div>
+      <div class="cursor-readout" id="cursorReadout">x: —, y: —</div>
+    </section>
+  </main>
+
+  <script src="js/atlas-editor.js?v=20260723"></script>
+</body>
+</html>
